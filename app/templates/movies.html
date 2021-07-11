@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Search for a movie
+</h1>
+<hr />
+<form method="POST" action="/movies">
+  <div class="row">
+    <div class="col-10">
+      <div class="mb-3">
+        <input class="form-control" type="text" name="search_text" placeholder="The Matrix" autofocus="" value="{{ search_text }}">
+      </div>
+    </div>
+    <div class="col">
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </div>
+  </div>
+</form>
+{% if results %}
+  <hr />
+  {% if results|length == 0 %}
+    <h3>No Results</h3>
+  {% else %}
+    <h3>Search found {{ results|length }} results</h3>
+    <ul>
+      {% for movie in results %}
+        <li>{{ movie.title }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endif %}
+{% endblock %}
