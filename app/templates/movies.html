@@ -27,7 +27,7 @@
     <h3>Search found {{ results|length }} results</h3>
     <ul>
       {% for movie in results %}
-        <li>{{ movie.title }}</li>
+        <li><a href="/movies/{{movie.id}}">{{ movie.title }} (https://image.tmdb.org/t/p/w500{{movie.poster_path}})</a></li>
       {% endfor %}
     </ul>
   {% endif %}
