@@ -13,6 +13,6 @@ class User(UserMixin, db.Model):
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    movie_id = db.Column(db.String(100), nullable=False)
+    movie_id = db.Column(db.String(100), nullable=False) # movie api's unique id for a movie
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     rating = db.Column(db.Float, nullable=False)

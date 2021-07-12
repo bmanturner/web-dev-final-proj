@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
-from . import db
+import requests
+from . import db, movie_api_key
 
 main = Blueprint('main', __name__)
 
@@ -24,10 +25,9 @@ def search_movies():
         return render_template('movies.html')
 
     search_text = request.form.get('search_text')
-    # TODO: run search with search_text, return any data that may be useful on the frontend
-    # such as: img url, unique identifier, year...
 
-    results = [{ 'title': 'The Thing' }, { 'title': 'The Hills Have Eyes' }] # mocked results
+    resp = requests.get(f"https://api.themoviedb.org/3/search/movie?api_key={movie_api_key}&query={search_text}")
+    results = resp.json()['results']
 
     return render_template('movies.html', results=results, search_text=search_text)
 
@@ -38,6 +38,9 @@ def movie(movie_id):
     # TODO: retrieve all movie reviews from database
     # from .models import Review
     # reviews = Review.query.filter_by(movie_id=movie_id)
+    resp = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={movie_api_key}")
+    print(resp.json())
+
     return 'Movie Page'
 
 @main.route('/review', methods=['POST'])
