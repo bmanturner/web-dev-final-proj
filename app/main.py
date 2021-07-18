@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required, current_user
+from .models import User, Review
 import requests
 from . import db, movie_api_key
 
@@ -25,7 +26,8 @@ def search_movies():
         return render_template('movies.html')
 
     search_text = request.form.get('search_text')
-
+    if len(search_text) == 0:
+        return render_template('movies.html')
     resp = requests.get(f"https://api.themoviedb.org/3/search/movie?api_key={movie_api_key}&query={search_text}")
     results = resp.json()['results']
 
@@ -39,12 +41,22 @@ def movie(movie_id):
     # from .models import Review
     # reviews = Review.query.filter_by(movie_id=movie_id)
     resp = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={movie_api_key}")
-    print(resp.json())
+    reviews = Review.query.filter_by(movie_id=movie_id).all()
+    for review in reviews:
+        print(review.user.name)
+        print(review.rating)
+    movie = resp.json()
 
-    return 'Movie Page'
+    return render_template('review.html', movie_id=movie_id, reviews=reviews, movie=movie)
 
-@main.route('/review', methods=['POST'])
+@main.route('/movies/<movie_id>', methods=['POST'])
 @login_required
-def add_review():
+def add_review(movie_id):
     # TODO: add a new review. see auth.signup for code example
-    return 'Review Not Added! Still to be Implemented!'
+    rating = request.form['options']
+    user_review = request.form.get('review_text')
+    new_review = Review(user_id=current_user.id, rating=rating, user_review=user_review, movie_id=movie_id)
+    db.session.add(new_review)
+    db.session.commit()
+    print(new_review)
+    return redirect(f"/movies/{movie_id}")
