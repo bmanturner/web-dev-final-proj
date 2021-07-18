@@ -20,4 +20,5 @@ class Review(db.Model):
     movie_id = db.Column(db.String(100), nullable=False) # movie api's unique id for a movie
     created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     rating = db.Column(db.Integer, nullable=False)
-    user_review = db.Column(db.String(280), nullable=False) # review text, up to 280 characters
+    review_text = db.Column(db.String(280), nullable=False) # review text, up to 280 characters
+    movie_title = db.Column(db.String(280), nullable=False)

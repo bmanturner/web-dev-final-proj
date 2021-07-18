@@ -45,6 +45,7 @@ def movie(movie_id):
     for review in reviews:
         print(review.user.name)
         print(review.rating)
+        print(review.movie_title)
     movie = resp.json()
 
     return render_template('review.html', movie_id=movie_id, reviews=reviews, movie=movie)
@@ -54,8 +55,9 @@ def movie(movie_id):
 def add_review(movie_id):
     # TODO: add a new review. see auth.signup for code example
     rating = request.form['options']
-    user_review = request.form.get('review_text')
-    new_review = Review(user_id=current_user.id, rating=rating, user_review=user_review, movie_id=movie_id)
+    review_text = request.form.get('review_text')
+    title = request.form.get('movie_title')
+    new_review = Review(user_id=current_user.id, rating=rating, review_text=review_text, movie_id=movie_id, movie_title=title)
     db.session.add(new_review)
     db.session.commit()
     print(new_review)
