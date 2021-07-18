@@ -1,3 +1,17 @@
+header {
+    background-color: black;
+}
+
 body {
-  background-color: red;
+  /*background-color: red;*/
+  background-image: url('film.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+{
+        display:inline-block;
+        border:1px solid #000;
+        padding:20px;
 }
