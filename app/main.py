@@ -2,21 +2,26 @@ from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required, current_user
 from .models import User, Review
 import requests
+from sqlalchemy import func, desc
 from . import db, movie_api_key
 
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    # TODO: query database to retrieve the top ten movies as determined by the average review rating
-    # TODO: BONUS: add the most recent ___ reviews entered on the site
-    recent = Review.query.order_by(Review.id.desc()).limit(3)
-    return render_template('index.html', recent=recent)
+    recent = Review.query.order_by(Review.created_date.desc()).limit(3)
+
+    top_10 = db.session.query(
+        Review.movie_id,
+        Review.movie_title,
+        func.avg(Review.rating).label('average')
+    ).group_by(Review.movie_id).order_by(desc('average')).limit(5).all()
+
+    return render_template('index.html', recent=recent, top_10=top_10)
 
 @main.route('/profile')
 @login_required
 def profile():
-    # TODO: query database to retrieve a list of movies reviewed by the current logged in user
     reviews = Review.query.filter_by(user_id=current_user.id).all()
     return render_template('profile.html', name=current_user.name, reviews=reviews)
 
@@ -37,20 +42,11 @@ def search_movies():
 @main.route('/movies/<movie_id>', methods=['GET'])
 @login_required
 def movie(movie_id):
-    # TODO: retrieve movie data from external API
-    # TODO: retrieve all movie reviews from database
-    # from .models import Review
-    # reviews = Review.query.filter_by(movie_id=movie_id)
     resp = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={movie_api_key}")
-    reviews = Review.query.filter_by(movie_id=movie_id).order_by(Review.id.desc()).limit(5)
-    user_has_reviewed = False
-    for review in reviews:
-        if review.user.id == current_user.id:
-            user_has_reviewed = True
-        print(review.user.name)
-        print(review.rating)
-        print(review.movie_title)
-        print(review.review_text)
+    reviews = Review.query.filter_by(movie_id=movie_id).order_by(Review.created_date.desc()).limit(5).all()
+
+    user_has_reviewed = any(review.user.id == current_user.id for review in reviews)
+
     movie = resp.json()
 
     return render_template('review.html', movie_id=movie_id, reviews=reviews, movie=movie, user_has_reviewed=user_has_reviewed)
@@ -58,12 +54,12 @@ def movie(movie_id):
 @main.route('/movies/<movie_id>', methods=['POST'])
 @login_required
 def add_review(movie_id):
-    # TODO: add a new review. see auth.signup for code example
     rating = request.form['options']
     review_text = request.form.get('review_text')
     title = request.form.get('movie_title')
+
     new_review = Review(user_id=current_user.id, rating=rating, review_text=review_text, movie_id=movie_id, movie_title=title)
     db.session.add(new_review)
     db.session.commit()
-    print(new_review)
+
     return redirect(f"/movies/{movie_id}")

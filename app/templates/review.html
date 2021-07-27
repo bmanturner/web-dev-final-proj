@@ -1,86 +1,91 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1 class="title">
-    {{ movie.title }}
-    <div class="box">
-        <img src="https://image.tmdb.org/t/p/w500/{{ movie.poster_path }}" alt="{{ movie.title }} poster">
-    </div>
-</h1>
-<h4 class="title">
-  {{ movie.overview }}
-</h4>
-<h2>
-    User Reviews
-</h2>
-<h3 class="title">
-    <div class="box">
-    {% for review in reviews %}
-        <h4>
-        {{ review.user.name }}
-        </h4>
-        <h5>
-        {{ review.created_date }}
-        </h5>
-        <h6>
-        {{ review.review_text }}
-        </h6>
-    {% endfor %}
-{% if user_has_reviewed == False %}   
-    </div>
-    Leave a Review
-</h3>
-<form method="POST" action="/movies/{{movie_id}}">
-    <input type="hidden" name="movie_title" value="{{movie.title}}">
-    <div class="row">
-        <div class="col-10">
-            <div class="btn-group btn-group-toggle" role="group" data-toggle="buttons" aria-label="Rating">
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option0" value="0" autocomplete="off"> 0
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option1" value="1" autocomplete="off"> 1
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option2" value="2" autocomplete="off"> 2
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option3" value="3" autocomplete="off"> 3
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option4" value="4" autocomplete="off"> 4
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option5" value="5" autocomplete="off"> 5
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option6" value="6" autocomplete="off"> 6
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option7" value="7" autocomplete="off"> 7
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option8" value="8" autocomplete="off"> 8
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option9" value="9" autocomplete="off"> 9
-                </label>
-                <label class="btn btn-secondary">
-                    <input type="radio" name="options" id="option10" value="10" autocomplete="off"> 10
-                </label>
-            </div>
-    </div>
-    <div class="col-10">
-        <div class="mb-3">
-            <textarea class="form-control" id="review_text" name="review_text" placeholder="Your thoughts go here!" rows="6" maxlength="280" value="{{ review_text }}"></textarea>
-        </div>
-    </div>
+
+<div class="row">
     <div class="col">
-        <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary">Post Review</button>
+        <h1 class="title">{{ movie.title }}</h1>
+        <div class="box">
+            <img src="https://image.tmdb.org/t/p/w500/{{ movie.poster_path }}" alt="{{ movie.title }} poster">
         </div>
     </div>
- </div>
-</form>
-{% endif %}
+    <div class="col" style="padding-top: 50px;">
+        <p>
+            <strong>{{ movie.overview }}</strong>
+        </p>
+        <hr />
+        {% if reviews|length > 0%}
+            <h2>
+                User Reviews
+            </h2>
+            {% for review in reviews %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ review.movie_title }}<span class="float-end">{{ review.rating }}</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">reviewed by {{ review.user.name }} on {{ review.created_date|formatdatetime }}</h6>
+                        <p class="card-text">{{ review.review_text }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% if user_has_reviewed == False %}
+                <h3>Leave a Review</h3>
+                <form method="POST" action="/movies/{{movie_id}}">
+                    <input type="hidden" name="movie_title" value="{{movie.title}}">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="btn-group btn-group-toggle" role="group" data-toggle="buttons" aria-label="Rating">
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option0" value="0" autocomplete="off"> 0
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option1" value="1" autocomplete="off"> 1
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option2" value="2" autocomplete="off"> 2
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option3" value="3" autocomplete="off"> 3
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option4" value="4" autocomplete="off"> 4
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option5" value="5" autocomplete="off"> 5
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option6" value="6" autocomplete="off"> 6
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option7" value="7" autocomplete="off"> 7
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option8" value="8" autocomplete="off"> 8
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option9" value="9" autocomplete="off"> 9
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="options" id="option10" value="10" autocomplete="off"> 10
+                                </label>
+                            </div>
+                    </div>
+                    <div class="col-10">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="review_text" name="review_text" placeholder="Your thoughts go here!" rows="6" maxlength="280" value="{{ review_text }}"></textarea>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Post Review</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+
+        {% endif %}
+    </div>
+</div>
+
+
 {% endblock %}

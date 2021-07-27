@@ -9,14 +9,12 @@ Your Reviewed Movies
 </h3>
 
 {% for review in reviews %}
-    <h4>
-    {{ review.movie_title }}
-    </h4>
-    <h6>
-    {{ review.created_date }}
-    </h6>
-    <h5>
-    {{ review.review_text }}
-    </h5>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{ review.movie_title }}<span class="float-end">{{ review.rating }}</span></h5>
+    <h6 class="card-subtitle mb-2 text-muted">reviewed by you on {{ review.created_date|formatdatetime }}</h6>
+    <p class="card-text">{{ review.review_text }}</p>
+  </div>
+</div>
     {% endfor %}
 {% endblock %}

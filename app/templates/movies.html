@@ -34,11 +34,31 @@
     <h3>No Results</h3>
   {% else %}
     <h3>Search found {{ results|length }} results</h3>
-    <ul>
+    <div class="row">
       {% for movie in results %}
-        <li><a href="/movies/{{movie.id}}">{{ movie.title }} (https://image.tmdb.org/t/p/w500{{movie.poster_path}})</a></li>
+      <div class="col-12 col-lg-6">
+          <div class="container">
+            <div class="card" style="height: 350px;">
+              <div class="row">
+                <div class="col-md-6">
+                  <img class="img-fluid" src="https://image.tmdb.org/t/p/w500{{movie.poster_path}}"  style="height: 350px;" />
+                </div>
+                <div class="col-md-6">
+                  <div class="card-block">
+                    <h4 class="card-title">{{ movie.title }}</h4>
+                    <p class="card-text"><strong>Released:</strong> {{ movie.release_date }}</p>
+                    <p class="card-text"><strong>Overview:</strong> {{ movie.overview | truncate(140) }}</p>
+                    <a href="/movies/{{movie.id}}" class="btn btn-primary">Review Movie...</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+      </div>
       {% endfor %}
-    </ul>
+    </div>
+
   {% endif %}
 {% endif %}
 {% endblock %}
