@@ -23,4 +23,18 @@
 <h3 class="title">
   Most Recent Reviews
 </h3>
+  {% for review in recent %}
+  <h4>
+  {{ review.movie_title }}
+  </h4>
+  <h5>
+  {{ review.user.name }}
+  </h5>
+  <h6>
+  {{ review.review_text }}
+  </h6>
+  <h6>
+  {{ review.created_date }}
+  </h6>
+  {% endfor %}
 {% endblock %}

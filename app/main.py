@@ -10,7 +10,8 @@ main = Blueprint('main', __name__)
 def index():
     # TODO: query database to retrieve the top ten movies as determined by the average review rating
     # TODO: BONUS: add the most recent ___ reviews entered on the site
-    return render_template('index.html')
+    recent = Review.query.order_by(Review.id.desc()).limit(3)
+    return render_template('index.html', recent=recent)
 
 @main.route('/profile')
 @login_required
