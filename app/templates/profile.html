@@ -4,4 +4,19 @@
 <h1 class="title">
   Welcome, {{ name }}
 </h1>
+<h3>
+Your Reviewed Movies
+</h3>
+
+{% for review in reviews %}
+    <h4>
+    {{ review.movie_title }}
+    </h4>
+    <h6>
+    {{ review.created_date }}
+    </h6>
+    <h5>
+    {{ review.review_text }}
+    </h5>
+    {% endfor %}
 {% endblock %}

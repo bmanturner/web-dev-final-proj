@@ -16,8 +16,8 @@ def index():
 @login_required
 def profile():
     # TODO: query database to retrieve a list of movies reviewed by the current logged in user
-
-    return render_template('profile.html', name=current_user.name, movies=[])
+    reviews = Review.query.filter_by(user_id=current_user.id).all()
+    return render_template('profile.html', name=current_user.name, reviews=reviews)
 
 @main.route('/movies', methods=['GET', 'POST'])
 @login_required
@@ -41,14 +41,18 @@ def movie(movie_id):
     # from .models import Review
     # reviews = Review.query.filter_by(movie_id=movie_id)
     resp = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={movie_api_key}")
-    reviews = Review.query.filter_by(movie_id=movie_id).all()
+    reviews = Review.query.filter_by(movie_id=movie_id).order_by(Review.id.desc()).limit(5)
+    userflag = False
     for review in reviews:
+        if review.user.id == current_user.id:
+            userflag = True
         print(review.user.name)
         print(review.rating)
         print(review.movie_title)
+        print(review.review_text)
     movie = resp.json()
 
-    return render_template('review.html', movie_id=movie_id, reviews=reviews, movie=movie)
+    return render_template('review.html', movie_id=movie_id, reviews=reviews, movie=movie, current_user=userflag)
 
 @main.route('/movies/<movie_id>', methods=['POST'])
 @login_required
