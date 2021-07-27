@@ -43,17 +43,17 @@ def movie(movie_id):
     # reviews = Review.query.filter_by(movie_id=movie_id)
     resp = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={movie_api_key}")
     reviews = Review.query.filter_by(movie_id=movie_id).order_by(Review.id.desc()).limit(5)
-    userflag = False
+    user_has_reviewed = False
     for review in reviews:
         if review.user.id == current_user.id:
-            userflag = True
+            user_has_reviewed = True
         print(review.user.name)
         print(review.rating)
         print(review.movie_title)
         print(review.review_text)
     movie = resp.json()
 
-    return render_template('review.html', movie_id=movie_id, reviews=reviews, movie=movie, current_user=userflag)
+    return render_template('review.html', movie_id=movie_id, reviews=reviews, movie=movie, user_has_reviewed=user_has_reviewed)
 
 @main.route('/movies/<movie_id>', methods=['POST'])
 @login_required
