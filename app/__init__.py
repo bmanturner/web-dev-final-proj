@@ -8,7 +8,7 @@ db = SQLAlchemy()
 movie_api_key = '331b87d85ca2fe097377be283e9fb171'
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='static', static_url_path='/static')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     app.config['SECRET_KEY'] = 'rUJ5jP2dFcRX5s'
