@@ -9,13 +9,13 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    recent = Review.query.order_by(Review.created_date.desc()).limit(3)
+    recent = Review.query.order_by(Review.created_date.desc()).limit(5)
 
     top_10 = db.session.query(
         Review.movie_id,
         Review.movie_title,
         func.avg(Review.rating).label('average')
-    ).group_by(Review.movie_id).order_by(desc('average')).limit(5).all()
+    ).group_by(Review.movie_id).order_by(desc('average')).limit(10).all()
 
     return render_template('index.html', recent=recent, top_10=top_10)
 
